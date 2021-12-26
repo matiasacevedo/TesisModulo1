@@ -1,12 +1,12 @@
+# ----------------  MODULO 1  --------------------
 import csv
 
-
 #A partir de la columna Close, al valor actual le voy restando todos hasta el quince, luego con el segundo le resto los 15 siguientes
-def RestarLos14Siguientes():
+def RestarLos14Siguientes(datasetNum):
     datosActual = None
     columnsResults = ["Col1", "Col2", "Col3", "Col4", "Col5", "Col6", "Col7", "Col8", "Col9", "Col10", "Col11", "Col12", "Col13", "Col14", "Col15", "Col16"]
 
-    with open('EURUSD Jun Jul Ago.csv', newline='') as File:
+    with open('DataSet_Inicial.csv', newline='') as File:
         with open('DataSet_3.csv', 'w') as FileW:
             reader = csv.reader(File)
             writer = csv.writer(FileW, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
@@ -82,7 +82,7 @@ def CopiarDe15():
     datosActual = None
     columnsResults = ["Col1", "Col2", "Col3", "Col4", "Col5", "Col6", "Col7", "Col8", "Col9", "Col10", "Col11", "Col12", "Col13", "Col14", "Col15", "Col16"]
 
-    with open('EURUSD Jun Jul Ago.csv', newline='') as File:
+    with open('DataSet_Inicial.csv', newline='') as File:
         with open('DataSet_1.csv', 'w') as FileW:
 
             reader = csv.reader(File)
@@ -233,7 +233,17 @@ def GenerarDatasetNormalizado(fileNameEnterFile, fileNameExitFile):
                 count = count + 1
 
 
-#CopiarDe15()
-#RestarLos14Siguientes()
+def GenerarDataSet(datasetNum):
+    if (datasetNum == 1):
+        CopiarDe15()
+    elif (datasetNum == 2):
+        RestarLos14Siguientes(datasetNum)
+    elif (datasetNum == 3):
+        GenerarDatasetNormalizado('DataSet_2.csv', 'DataSet_3.csv')
+    else:
+        print("El número de dataset es incorrecto")
 
-GenerarDatasetNormalizado('DataSet_2.csv', 'DatasetNormalizado.csv')
+
+
+
+# ----------------  MODULO 2  --------------------
