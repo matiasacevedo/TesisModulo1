@@ -2,12 +2,12 @@
 import csv
 
 #A partir de la columna Close, al valor actual le voy restando todos hasta el quince, luego con el segundo le resto los 15 siguientes
-def RestarLos14Siguientes(datasetNum):
+def RestarLos14Siguientes(datasetNum, fileNameGenerated, fileNameToProces):
     datosActual = None
     columnsResults = ["Col1", "Col2", "Col3", "Col4", "Col5", "Col6", "Col7", "Col8", "Col9", "Col10", "Col11", "Col12", "Col13", "Col14", "Col15", "Col16"]
 
-    with open('DataSet_Inicial.csv', newline='') as File:
-        with open('DataSet_3.csv', 'w') as FileW:
+    with open(fileNameToProces, newline='') as File:
+        with open(fileNameGenerated, 'w') as FileW:
             reader = csv.reader(File)
             writer = csv.writer(FileW, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
             writer.writerow(columnsResults)
@@ -48,7 +48,7 @@ def RestarLos14Siguientes(datasetNum):
                         listResult[14] = float(list[0]) - float(dataActualList[ubicacionDeColParaExtraer])
 
                         # asigno el resultado de la variacion del primero con el ultimo a la ultima posicion
-                        listResult[15] = RetornarMasOMenosEntrePrimerYUltimaCol(float(listResult[0]), float(listResult[14]))
+                        listResult[15] = RetornarVariacionEntrePrimeraUltimaCol(float(listResult[0]), float(listResult[14]))
 
                         # mover los datos hacia atras
                         list[0] = list[1]
@@ -78,12 +78,12 @@ def RestarLos14Siguientes(datasetNum):
 # lista el primero y luego los 14 siguientes (15 en total).
 # Luego en el siguiente registro toma el segundo y los 14 siguientes precios y así sucesivamente.
 # La ultima columna contiene la variacion del primero con el último                         # S si subió, I si quedó igual, B si bajó
-def CopiarDe15():
+def CopiarDe15(fileNameGenerated, fileNameToProces):
     datosActual = None
-    columnsResults = ["Col1", "Col2", "Col3", "Col4", "Col5", "Col6", "Col7", "Col8", "Col9", "Col10", "Col11", "Col12", "Col13", "Col14", "Col15", "Col16"]
+    columnsResults = ["Col1", "Col2", "Col3", "Col4", "Col5", "Col6", "Col7", "Col8", "Col9", "Col10", "Col11", "Col12", "Col13", "Col14", "Col15", "Class"]
 
-    with open('DataSet_Inicial.csv', newline='') as File:
-        with open('DataSet_1.csv', 'w') as FileW:
+    with open(fileNameToProces, newline='') as File:
+        with open(fileNameGenerated, 'w') as FileW:
 
             reader = csv.reader(File)
             writer = csv.writer(FileW, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
@@ -109,7 +109,7 @@ def CopiarDe15():
                             first = float(list[0])
                             last = float(list[14])
 
-                            list[15] = RetornarVariacionEntrePrimeraUltimaCol(first, last)
+                            list[15] = '?'#RetornarVariacionEntrePrimeraUltimaCol(first, last)
 
                         cant += 1
                     else:
@@ -146,7 +146,7 @@ def CopiarDe15():
                         last = float(list[14])
 
                         # asigno el resultado de la variacion del primero con el ultimo a la ultima posicion
-                        list[15] = RetornarVariacionEntrePrimeraUltimaCol(first, last)
+                        list[15] = '?'#RetornarVariacionEntrePrimeraUltimaCol(first, last)
 
 # Retorna La ultima columna que contiene la variacion del primero con el último
 # S si subió, I si quedó igual, B si bajó
@@ -233,17 +233,28 @@ def GenerarDatasetNormalizado(fileNameEnterFile, fileNameExitFile):
                 count = count + 1
 
 
-def GenerarDataSet(datasetNum):
+# Metodo generico que llama a los demas metodos para generar los dataset del 1 al 3
+def GenerarDataSet(datasetNum, fileNameGenerated, fileNameToProces):
     if (datasetNum == 1):
-        CopiarDe15()
+        CopiarDe15(fileNameGenerated, fileNameToProces)
     elif (datasetNum == 2):
-        RestarLos14Siguientes(datasetNum)
+        RestarLos14Siguientes(datasetNum, fileNameGenerated, fileNameToProces)
     elif (datasetNum == 3):
-        GenerarDatasetNormalizado('DataSet_2.csv', 'DataSet_3.csv')
+        GenerarDatasetNormalizado(fileNameToProces, fileNameGenerated)
     else:
         print("El número de dataset es incorrecto")
 
 
+#           GENERAR DATASETS PARA TESTING
 
+# Generar dataset para pruebas para el dataseet1.
+# La ultima columna debe llamarse Class y no Col16 y debe tener como datos en toda la columna un ?
+#GenerarDataSet(1, 'DataSet_1_Test.csv', 'DataSet_Inicial_Test.csv')
 
-# ----------------  MODULO 2  --------------------
+# Generar dataser para pruebas apartir del dataset2
+# La ultima columna debe llamarse Class y no Col16 y debe tener como datos en toda la columna un ?
+#GenerarDataSet(2, 'DataSet_2_Test.csv', 'DataSet_Inicial_Test.csv')
+
+# Generar dataset final para testear generado del dataset2 y 3
+# GenerarDataSet(3, 'DataSet_3_Test.csv', 'DataSet_2_Test.csv')
+
