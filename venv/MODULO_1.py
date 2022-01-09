@@ -207,9 +207,9 @@ def GenerarDatasetNormalizado(fileNameEnterFile, fileNameExitFile):
         with open(fileNameExitFile, 'w') as FileW:
 
             reader = csv.reader(File)
-            columnsResults = ["Col1", "Col2", "Col3", "Col4", "Col5", "Col6", "Col7", "Col8", "Col9", "Col10", "Col11",
+            columnsResults = ["Col1", "Col2", "Col3", "Col4", "Col5", "Col6", "Col7", "Col8", "Col9", "Col10", "Col11", "Class",
                               "Col12", "Col13", "Col14", "Col15"]
-            listToSave = ["", "", "", "", "", "", "", "", "", "", "", "", "", "", ""]
+            listToSave = ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""]
             count = 0
 
             writer = csv.writer(FileW, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
@@ -228,6 +228,7 @@ def GenerarDatasetNormalizado(fileNameEnterFile, fileNameExitFile):
                         countData = countData + 1
 
                     print(listToSave)
+                    listToSave[15] = "?"
                     writer.writerow(listToSave)
 
                 count = count + 1
@@ -243,6 +244,14 @@ def GenerarDataSet(datasetNum, fileNameGenerated, fileNameToProces):
         GenerarDatasetNormalizado(fileNameToProces, fileNameGenerated)
     else:
         print("El número de dataset es incorrecto")
+
+
+#           GENERAR DATASET PARA CREAR LOS MODELOS
+# GenerarDataSet(1, 'DataSet_1.csv', 'DataSet_Inicial.csv')
+
+# GenerarDataSet(2, 'DataSet_2.csv', 'DataSet_Inicial.csv')
+
+# GenerarDataSet(3, 'DataSet_3.csv', 'DataSet_2.csv')
 
 
 #           GENERAR DATASETS PARA TESTING
