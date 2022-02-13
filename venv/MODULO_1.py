@@ -207,8 +207,7 @@ def GenerarDatasetNormalizado(fileNameEnterFile, fileNameExitFile):
         with open(fileNameExitFile, 'w') as FileW:
 
             reader = csv.reader(File)
-            columnsResults = ["Col1", "Col2", "Col3", "Col4", "Col5", "Col6", "Col7", "Col8", "Col9", "Col10", "Col11", "Class",
-                              "Col12", "Col13", "Col14", "Col15"]
+            columnsResults = ["Col1", "Col2", "Col3", "Col4", "Col5", "Col6", "Col7", "Col8", "Col9", "Col10", "Col11", "Col12", "Col13", "Col14", "Col15", "Class"]
             listToSave = ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""]
             count = 0
 
@@ -228,7 +227,7 @@ def GenerarDatasetNormalizado(fileNameEnterFile, fileNameExitFile):
                         countData = countData + 1
 
                     print(listToSave)
-                    listToSave[15] = "?"
+                    listToSave[15] = RetornarVariacionEntrePrimeraUltimaCol(float(listToSave[0]), float(listToSave[14]))
                     writer.writerow(listToSave)
 
                 count = count + 1
@@ -258,7 +257,7 @@ def GenerarDataSet(datasetNum, fileNameGenerated, fileNameToProces):
 
 # Generar dataset para pruebas para el dataseet1.
 # La ultima columna debe llamarse Class y no Col16 y debe tener como datos en toda la columna un ?
-#GenerarDataSet(1, 'DataSet_1_Test.csv', 'DataSet_Inicial_Test.csv')
+GenerarDataSet(1, 'DataSet_1_Test.csv', 'DataSet_Inicial_Test.csv')
 
 # Generar dataser para pruebas apartir del dataset2
 # La ultima columna debe llamarse Class y no Col16 y debe tener como datos en toda la columna un ?
@@ -267,3 +266,65 @@ def GenerarDataSet(datasetNum, fileNameGenerated, fileNameToProces):
 # Generar dataset final para testear generado del dataset2 y 3
 # GenerarDataSet(3, 'DataSet_3_Test.csv', 'DataSet_2_Test.csv')
 
+
+def CalcularPromedioDePrediccionesDataSet_1():
+
+    with open("Predictions_DataSet_1.rdp", "r") as archivo:
+        cantDe1 = 0
+        sum = 0
+        count = 0
+        countB = 0
+        sumB = 0
+        countI = 0
+        sumI = 0
+        countS = 0
+        sumS = 0
+
+        for linea in archivo:
+            if (linea.strip() == ""): continue
+            if (count > 0):
+                #print(linea)
+                colPredicted = linea.split()[1]
+                colPrediction = float(linea.split()[2])
+                #print(colPredicted) # B-S-I
+                #print(colPrediction) # 1- 0,999..
+
+                if (colPrediction == 1): cantDe1 += 1
+
+                if ("B" in colPredicted):
+                    countB += 1
+                    sumB += colPrediction
+
+                if ("I" in colPredicted):
+                    countI += 1
+                    sumI += colPrediction
+
+                if ("S" in colPredicted):
+                    countS += 1
+                    sumS += colPrediction
+
+                sum += colPrediction
+
+            count += 1
+
+        count = count - 1
+        promedio = float(sum / count)
+        promedioB = float(sumB / countB)
+        promedioI = float(sumI / countI)
+        promedioS = float(sumS / countS)
+
+        print("----------Rasultados de modelo MultilayerPerceptron------------")
+        print("Cantidad de 1: " + str(cantDe1))
+        print("Cantidad: " + str(count))
+        print("Promedio: " + str(round(promedio, 4) * 100) )
+        print("----------Prediccion de Bajas------------")
+        print("Cantidad de B: " + str(countB))
+        print("Promedio: " + str(round(promedioB, 4) * 100) )
+        print("----------Prediccion de Iguales------------")
+        print("Cantidad de I: " + str(countI))
+        print("Promedio: " + str(round(promedioI, 5) * 100) )
+        print("----------Prediccion de Subas------------")
+        print("Cantidad de S: " + str(countS))
+        print("Promedio: " + str(round(promedioS, 5) * 100) )
+
+# CalcularPromedioDePrediccionesDataSet_1()

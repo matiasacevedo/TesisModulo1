@@ -1,21 +1,21 @@
-@relation 'DataSet_1_Test'
+@relation DataSet_1_Test
 
-@attribute Col1 REAL
-@attribute Col2 REAL
-@attribute Col3 REAL
-@attribute Col4 REAL
-@attribute Col5 REAL
-@attribute Col6 REAL
-@attribute Col7 REAL
-@attribute Col8 REAL
-@attribute Col9 REAL
-@attribute Col10 REAL
-@attribute Col11 REAL
-@attribute Col12 REAL
-@attribute Col13 REAL
-@attribute Col14 REAL
-@attribute Col15 REAL
-@attribute Class REAL
+@attribute Col1 numeric
+@attribute Col2 numeric
+@attribute Col3 numeric
+@attribute Col4 numeric
+@attribute Col5 numeric
+@attribute Col6 numeric
+@attribute Col7 numeric
+@attribute Col8 numeric
+@attribute Col9 numeric
+@attribute Col10 numeric
+@attribute Col11 numeric
+@attribute Col12 numeric
+@attribute Col13 numeric
+@attribute Col14 numeric
+@attribute Col15 numeric
+@attribute Class { S, I, B }
 
 @data
 11.573,11.574,11.575,11.575,11.575,11.575,11.574,11.574,11.573,11.573,11.572,11.571,11.572,11.572,11.571,?
