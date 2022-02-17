@@ -2,7 +2,7 @@
 import csv
 
 #A partir de la columna Close, al valor actual le voy restando todos hasta el quince, luego con el segundo le resto los 15 siguientes
-def RestarLos14Siguientes(datasetNum, fileNameGenerated, fileNameToProces):
+def RestarLos14Siguientes(datasetNum, fileNameGenerated, fileNameToProces, isTest):
     datosActual = None
     columnsResults = ["Col1", "Col2", "Col3", "Col4", "Col5", "Col6", "Col7", "Col8", "Col9", "Col10", "Col11", "Col12", "Col13", "Col14", "Col15", "Col16"]
 
@@ -48,7 +48,11 @@ def RestarLos14Siguientes(datasetNum, fileNameGenerated, fileNameToProces):
                         listResult[14] = float(list[0]) - float(dataActualList[ubicacionDeColParaExtraer])
 
                         # asigno el resultado de la variacion del primero con el ultimo a la ultima posicion
-                        listResult[15] = RetornarVariacionEntrePrimeraUltimaCol(float(listResult[0]), float(listResult[14]))
+                        if (isTest):
+                            listResult[15] = '?'
+                        else:
+                            listResult[15] = RetornarVariacionEntrePrimeraUltimaCol(float(listResult[0]), float(listResult[14]))
+
 
                         # mover los datos hacia atras
                         list[0] = list[1]
@@ -78,7 +82,7 @@ def RestarLos14Siguientes(datasetNum, fileNameGenerated, fileNameToProces):
 # lista el primero y luego los 14 siguientes (15 en total).
 # Luego en el siguiente registro toma el segundo y los 14 siguientes precios y así sucesivamente.
 # La ultima columna contiene la variacion del primero con el último                         # S si subió, I si quedó igual, B si bajó
-def CopiarDe15(fileNameGenerated, fileNameToProces):
+def CopiarDe15(fileNameGenerated, fileNameToProces, isTest):
     datosActual = None
     columnsResults = ["Col1", "Col2", "Col3", "Col4", "Col5", "Col6", "Col7", "Col8", "Col9", "Col10", "Col11", "Col12", "Col13", "Col14", "Col15", "Class"]
 
@@ -108,8 +112,10 @@ def CopiarDe15(fileNameGenerated, fileNameToProces):
                         if (list[0] != "" and list[14] != ""):
                             first = float(list[0])
                             last = float(list[14])
-
-                            list[15] = '?'#RetornarVariacionEntrePrimeraUltimaCol(first, last)
+                            if (isTest):
+                                list[15] = '?'
+                            else:
+                                list[15] = RetornarVariacionEntrePrimeraUltimaCol(first, last)
 
                         cant += 1
                     else:
@@ -146,7 +152,10 @@ def CopiarDe15(fileNameGenerated, fileNameToProces):
                         last = float(list[14])
 
                         # asigno el resultado de la variacion del primero con el ultimo a la ultima posicion
-                        list[15] = '?'#RetornarVariacionEntrePrimeraUltimaCol(first, last)
+                        if (isTest):
+                            list[15] = '?'
+                        else:
+                            list[15] = RetornarVariacionEntrePrimeraUltimaCol(first, last)
 
 # Retorna La ultima columna que contiene la variacion del primero con el último
 # S si subió, I si quedó igual, B si bajó
@@ -171,7 +180,7 @@ def RetornarMasOMenosEntrePrimerYUltimaCol(primero, ultimo):
 # distribuidos entre cero y uno. A esto se le llama cambio de escala
 # (x1 - min)/(max - min) = un valor entre 0 y 1
 # R = max - min (Rango)
-def GenerarDatasetNormalizado(fileNameEnterFile, fileNameExitFile):
+def GenerarDatasetNormalizado(fileNameEnterFile, fileNameExitFile, isTest):
     cantColumns = 15
     max = -100
     men = 100
@@ -227,46 +236,28 @@ def GenerarDatasetNormalizado(fileNameEnterFile, fileNameExitFile):
                         countData = countData + 1
 
                     print(listToSave)
-                    listToSave[15] = RetornarVariacionEntrePrimeraUltimaCol(float(listToSave[0]), float(listToSave[14]))
+                    if (isTest):
+                        listToSave[15] = '?'
+                    else:
+                        listToSave[15] = RetornarVariacionEntrePrimeraUltimaCol(float(listToSave[0]), float(listToSave[14]))
+
                     writer.writerow(listToSave)
 
                 count = count + 1
 
 
 # Metodo generico que llama a los demas metodos para generar los dataset del 1 al 3
-def GenerarDataSet(datasetNum, fileNameGenerated, fileNameToProces):
+def GenerarDataSet(datasetNum, fileNameGenerated, fileNameToProces, isTest):
     if (datasetNum == 1):
-        CopiarDe15(fileNameGenerated, fileNameToProces)
+        CopiarDe15(fileNameGenerated, fileNameToProces, isTest)
     elif (datasetNum == 2):
-        RestarLos14Siguientes(datasetNum, fileNameGenerated, fileNameToProces)
+        RestarLos14Siguientes(datasetNum, fileNameGenerated, fileNameToProces, isTest)
     elif (datasetNum == 3):
-        GenerarDatasetNormalizado(fileNameToProces, fileNameGenerated)
+        GenerarDatasetNormalizado(fileNameToProces, fileNameGenerated, isTest)
     else:
         print("El número de dataset es incorrecto")
 
-
-#           GENERAR DATASET PARA CREAR LOS MODELOS
-# GenerarDataSet(1, 'DataSet_1.csv', 'DataSet_Inicial.csv')
-
-# GenerarDataSet(2, 'DataSet_2.csv', 'DataSet_Inicial.csv')
-
-# GenerarDataSet(3, 'DataSet_3.csv', 'DataSet_2.csv')
-
-
-#           GENERAR DATASETS PARA TESTING
-
-# Generar dataset para pruebas para el dataseet1.
-# La ultima columna debe llamarse Class y no Col16 y debe tener como datos en toda la columna un ?
-GenerarDataSet(1, 'DataSet_1_Test.csv', 'DataSet_Inicial_Test.csv')
-
-# Generar dataser para pruebas apartir del dataset2
-# La ultima columna debe llamarse Class y no Col16 y debe tener como datos en toda la columna un ?
-#GenerarDataSet(2, 'DataSet_2_Test.csv', 'DataSet_Inicial_Test.csv')
-
-# Generar dataset final para testear generado del dataset2 y 3
-# GenerarDataSet(3, 'DataSet_3_Test.csv', 'DataSet_2_Test.csv')
-
-
+# Genera promedio de predicciones generadas por el modelo generado por el DataSet_1
 def CalcularPromedioDePrediccionesDataSet_1():
 
     with open("Predictions_DataSet_1.rdp", "r") as archivo:
@@ -327,4 +318,29 @@ def CalcularPromedioDePrediccionesDataSet_1():
         print("Cantidad de S: " + str(countS))
         print("Promedio: " + str(round(promedioS, 5) * 100) )
 
+
+
+#           GENERAR DATASET PARA CREAR LOS MODELOS
+#GenerarDataSet(1, 'DataSet_1.csv', 'DataSet_Inicial.csv', False)
+
+# GenerarDataSet(2, 'DataSet_2.csv', 'DataSet_Inicial.csv', False)
+
+# GenerarDataSet(3, 'DataSet_3.csv', 'DataSet_2.csv', False)
+
+
+#           GENERAR DATASETS PARA TESTING
+
+# Generar dataset para pruebas para el dataseet1.
+# La ultima columna debe llamarse Class y no Col16 y debe tener como datos en toda la columna un ?
+GenerarDataSet(1, 'DataSet_1_Test.csv', 'DataSet_Inicial_Test.csv', True)
+
+# Generar dataser para pruebas apartir del dataset2
+# La ultima columna debe llamarse Class y no Col16 y debe tener como datos en toda la columna un ?
+#GenerarDataSet(2, 'DataSet_2_Test.csv', 'DataSet_Inicial_Test.csv', True)
+
+# Generar dataset final para testear generado del dataset2 y 3
+# GenerarDataSet(3, 'DataSet_3_Test.csv', 'DataSet_2_Test.csv', True)
+
+
+# Genera promedio de predicciones generadas por el modelo generado por el DataSet_1
 # CalcularPromedioDePrediccionesDataSet_1()
